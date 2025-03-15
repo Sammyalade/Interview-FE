@@ -1,7 +1,9 @@
 replicaCount: 2
 
+gcpProject: circular-hawk-453613-u6
+
 image:
-  repository: gcr.io/{{ .Values.gcpProject }}/interview-fe
+  repository: gcr.io/circular-hawk-453613-u6/interview-fe
   tag: latest
   pullPolicy: Always
 
