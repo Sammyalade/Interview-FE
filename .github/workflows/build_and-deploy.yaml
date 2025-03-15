@@ -23,6 +23,11 @@ jobs:
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Install GKE Auth Plugin
+      run: |
+        gcloud components install gke-gcloud-auth-plugin
+        echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+
     - name: Create GKE Cluster (if not exists)
       run: |
         gcloud container clusters list --zone us-central1-a | grep my-cluster || \
@@ -39,16 +44,17 @@ jobs:
       run: |
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Verify Kubernetes Connection
+      run: kubectl cluster-info
+
     - name: Install Trivy (Security Scanner)
       run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-          sudo mv ./bin/trivy /usr/local/bin/
-      
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+        sudo mv ./bin/trivy /usr/local/bin/
 
     - name: Build Docker Image
       run: |
-            docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/interview-fe:latest .
-        
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/interview-fe:latest .
 
     - name: Scan Docker Image with Trivy
       run: |
