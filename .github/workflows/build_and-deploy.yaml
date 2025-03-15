@@ -39,10 +39,11 @@ jobs:
       run: |
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project ${{ secrets.GCP_PROJECT_ID }}
 
-    - name: Install Trivy
+    - name: Install Trivy (Security Scanner)
       run: |
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-        sudo mv trivy /usr/local/bin/
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          sudo mv ./bin/trivy /usr/local/bin/
+      
 
     - name: Build Docker Image
       run: |
